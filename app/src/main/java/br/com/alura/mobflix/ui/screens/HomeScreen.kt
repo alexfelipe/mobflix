@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import br.com.alura.mobflix.R
 import br.com.alura.mobflix.ui.theme.MobflixTheme
+import coil.compose.AsyncImage
 
 @Composable
 fun HomeScreen(
@@ -38,8 +39,8 @@ fun HomeScreen(
                 .height(140.dp)
                 .fillMaxWidth()
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher_background),
+            AsyncImage(
+                "https://i.ytimg.com/vi/2t8ycK8D4Rk/maxresdefault.jpg",
                 contentDescription = null,
                 Modifier
                     .fillMaxSize(),
@@ -96,8 +97,8 @@ fun HomeScreen(
                 ) {
                     Tag(text = "Mobile")
                     Spacer(modifier = Modifier.height(8.dp))
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_background),
+                    AsyncImage(
+                        "https://i.ytimg.com/vi/yI3AYA3L0xU/maxresdefault.jpg",
                         contentDescription = null,
                         Modifier
                             .height(180.dp)
