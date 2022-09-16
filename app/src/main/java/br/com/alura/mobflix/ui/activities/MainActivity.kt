@@ -1,4 +1,4 @@
-package br.com.alura.mobflix
+package br.com.alura.mobflix.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -27,12 +27,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            App(onFabClick = {
-                Intent(
-                    this,
-                    FormVideoActivity::class.java
-                ).apply { startActivity(this) }
-            }) {
+            App(
+                onFabClick = {
+                    Intent(
+                        this,
+                        FormVideoActivity::class.java
+                    ).apply { startActivity(this) }
+                },
+            ) {
                 HomeScreen(Modifier.padding(it))
             }
         }
@@ -88,6 +90,6 @@ fun App(
 @Composable
 fun AppPreview() {
     App {
-
+        HomeScreen(Modifier.padding(it))
     }
 }

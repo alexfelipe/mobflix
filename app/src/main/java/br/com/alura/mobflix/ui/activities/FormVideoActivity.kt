@@ -1,7 +1,6 @@
-package br.com.alura.mobflix
+package br.com.alura.mobflix.ui.activities
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
@@ -13,8 +12,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
@@ -22,6 +19,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import br.com.alura.mobflix.model.Category
+import br.com.alura.mobflix.model.YoutubeVideo
 import br.com.alura.mobflix.ui.screens.CardVideoYoutube
 import br.com.alura.mobflix.ui.theme.MobflixTheme
 
@@ -42,10 +41,20 @@ class FormVideoActivity : ComponentActivity() {
 
 @Composable
 fun FormVideoApp() {
-    var youtubeUrl by remember { mutableStateOf("") }
+    var youtubeId by remember { mutableStateOf("") }
     var url by remember { mutableStateOf("") }
-    var categoria by remember { mutableStateOf("") }
-    val focusRequester = remember { FocusRequester() }
+    var category by remember { mutableStateOf("") }
+
+    val selectedCategory: Category? = remember(category) {
+        try {
+            Category.valueOf(category)
+        } catch (e: Exception) {
+            null
+        }
+    }
+    val video = remember(youtubeId, selectedCategory ) {
+        YoutubeVideo(youtubeId, selectedCategory)
+    }
     val focusManager = LocalFocusManager.current
     LazyColumn(
         Modifier
@@ -68,7 +77,6 @@ fun FormVideoApp() {
             )
         }
         item {
-
             FormTextField(
                 url,
                 onValueChange = {
@@ -76,8 +84,7 @@ fun FormVideoApp() {
                 },
                 Modifier.onFocusChanged {
                     if (!it.isFocused) {
-                        Log.i("FormVideoActivity", "FormVideoApp: oi")
-                        youtubeUrl = url
+                        youtubeId = url
                     }
                 },
                 label = "URL",
@@ -85,18 +92,16 @@ fun FormVideoApp() {
             )
         }
         item {
-
             FormTextField(
-                categoria,
+                category,
                 onValueChange = {
-                    categoria = it
+                    category = it.uppercase()
                 },
                 Modifier,
                 label = "Categoria",
-                placeholder = "Mobile, Front-End...",
+                placeholder = "Mobile, FRONT-END...",
             )
         }
-
         item {
             Column {
                 Text(
@@ -107,12 +112,10 @@ fun FormVideoApp() {
                     fontSize = 28.sp
                 )
                 CardVideoYoutube(
-                    title = categoria,
-                    img = youtubeUrl
+                    video
                 )
             }
         }
-
         item {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Surface(

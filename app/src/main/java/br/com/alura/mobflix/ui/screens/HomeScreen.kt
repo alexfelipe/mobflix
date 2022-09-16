@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -20,6 +21,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.alura.mobflix.R
+import br.com.alura.mobflix.model.Category
+import br.com.alura.mobflix.model.YoutubeVideo
+import br.com.alura.mobflix.sampleData.sampleVideos
 import br.com.alura.mobflix.ui.theme.MobflixTheme
 import coil.compose.AsyncImage
 
@@ -42,7 +46,9 @@ fun HomeScreen(
                 Modifier
                     .fillMaxSize(),
                 contentScale = ContentScale.Crop,
-                placeholder = painterResource(id = R.drawable.preview_image_placeholder)
+                placeholder = painterResource(
+                    id = R.drawable.preview_image_placeholder
+                )
             )
             Surface(
                 Modifier
@@ -74,16 +80,12 @@ fun HomeScreen(
                         end = 36.dp,
                     )
                 ) {
-                    items(List(100) {
-                        "Mobile"
-                    }) {
-                        Tag(it)
+                    items(Category.values()) { category ->
+                        Tag(category)
                     }
                 }
             }
-            items(List(100) {
-                "Mobile"
-            }) {
+            items(sampleVideos) { video ->
                 Column(
                     Modifier.padding(
                         top = 18.dp,
@@ -91,7 +93,7 @@ fun HomeScreen(
                         end = 36.dp,
                     )
                 ) {
-                    CardVideoYoutube("Mobile", "SCl_rdp0Wik")
+                    CardVideoYoutube(video)
                 }
             }
         }
@@ -100,13 +102,17 @@ fun HomeScreen(
 }
 
 @Composable
-fun CardVideoYoutube(title: String, img: String? = null) {
-    val youtubeThumb = "https://img.youtube.com/vi/$img/0.jpg"
-    if (title.isNotBlank()) {
-        Tag(text = title, Modifier.padding(bottom = 8.dp))
+fun CardVideoYoutube(
+    video: YoutubeVideo
+) {
+    video.category?.let {
+        Tag(
+            category = it,
+            Modifier.padding(bottom = 8.dp),
+        )
     }
     AsyncImage(
-        youtubeThumb,
+        video.thumb,
         contentDescription = null,
         Modifier
             .height(180.dp)
@@ -119,11 +125,11 @@ fun CardVideoYoutube(title: String, img: String? = null) {
 }
 
 @Composable
-fun Tag(text: String, modifier: Modifier = Modifier) {
+fun Tag(category: Category, modifier: Modifier = Modifier) {
     Box(
         modifier
             .background(
-                Color.Cyan,
+                color = Color(category.backgroundColor),
                 shape = RoundedCornerShape(12.dp),
             )
             .padding(
@@ -131,7 +137,12 @@ fun Tag(text: String, modifier: Modifier = Modifier) {
                 vertical = 8.dp
             ),
     ) {
-        Text(text = text)
+        Text(
+            text = category.id,
+            style = LocalTextStyle.current.copy(
+                color = Color(category.textColor)
+            ),
+        )
     }
 
 }
