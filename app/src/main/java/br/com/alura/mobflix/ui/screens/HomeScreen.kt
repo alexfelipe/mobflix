@@ -42,7 +42,7 @@ fun HomeScreen(
                 Modifier
                     .fillMaxSize(),
                 contentScale = ContentScale.Crop,
-                placeholder = painterResource(id = R.drawable.ic_launcher_background)
+                placeholder = painterResource(id = R.drawable.preview_image_placeholder)
             )
             Surface(
                 Modifier
@@ -91,7 +91,7 @@ fun HomeScreen(
                         end = 36.dp,
                     )
                 ) {
-                    CardVideo("Mobile", "https://i.ytimg.com/vi/yI3AYA3L0xU/maxresdefault.jpg")
+                    CardVideoYoutube("Mobile", "SCl_rdp0Wik")
                 }
             }
         }
@@ -100,25 +100,28 @@ fun HomeScreen(
 }
 
 @Composable
-fun CardVideo(title: String, img: String) {
-    Tag(text = title)
-    Spacer(modifier = Modifier.height(8.dp))
+fun CardVideoYoutube(title: String, img: String? = null) {
+    val youtubeThumb = "https://img.youtube.com/vi/$img/0.jpg"
+    if (title.isNotBlank()) {
+        Tag(text = title, Modifier.padding(bottom = 8.dp))
+    }
     AsyncImage(
-        img,
+        youtubeThumb,
         contentDescription = null,
         Modifier
             .height(180.dp)
             .fillMaxWidth()
             .clip(shape = RoundedCornerShape(8.dp)),
         contentScale = ContentScale.Crop,
-        placeholder = painterResource(id = R.drawable.ic_launcher_background)
+        placeholder = painterResource(id = R.drawable.preview_video_placeholder),
+        error = painterResource(id = R.drawable.preview_video_placeholder)
     )
 }
 
 @Composable
-fun Tag(text: String) {
+fun Tag(text: String, modifier: Modifier = Modifier) {
     Box(
-        Modifier
+        modifier
             .background(
                 Color.Cyan,
                 shape = RoundedCornerShape(12.dp),

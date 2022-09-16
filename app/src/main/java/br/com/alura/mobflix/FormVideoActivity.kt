@@ -1,9 +1,11 @@
 package br.com.alura.mobflix
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,12 +13,16 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.com.alura.mobflix.ui.screens.CardVideo
+import br.com.alura.mobflix.ui.screens.CardVideoYoutube
 import br.com.alura.mobflix.ui.theme.MobflixTheme
 
 class FormVideoActivity : ComponentActivity() {
@@ -36,7 +42,20 @@ class FormVideoActivity : ComponentActivity() {
 
 @Composable
 fun FormVideoApp() {
+    var youtubeUrl by remember { mutableStateOf("") }
+    var url by remember { mutableStateOf("") }
+    var categoria by remember { mutableStateOf("") }
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
     LazyColumn(
+        Modifier
+            .fillMaxSize()
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+            ) {
+                focusManager.clearFocus(true)
+            },
         contentPadding = PaddingValues(36.dp),
         verticalArrangement = Arrangement.spacedBy(32.dp),
     ) {
@@ -49,23 +68,30 @@ fun FormVideoApp() {
             )
         }
         item {
-            var url by remember { mutableStateOf("") }
+
             FormTextField(
                 url,
                 onValueChange = {
                     url = it
+                },
+                Modifier.onFocusChanged {
+                    if (!it.isFocused) {
+                        Log.i("FormVideoActivity", "FormVideoApp: oi")
+                        youtubeUrl = url
+                    }
                 },
                 label = "URL",
                 placeholder = "id do youtube",
             )
         }
         item {
-            var categoria by remember { mutableStateOf("") }
+
             FormTextField(
                 categoria,
                 onValueChange = {
                     categoria = it
                 },
+                Modifier,
                 label = "Categoria",
                 placeholder = "Mobile, Front-End...",
             )
@@ -80,9 +106,9 @@ fun FormVideoApp() {
                         .padding(bottom = 8.dp),
                     fontSize = 28.sp
                 )
-                CardVideo(
-                    title = "mobile",
-                    img = "https://cdn.beacons.ai/user_content/0pFto0dcXUPv1y1pur3Y9kb6pCC2/link_images/9b234a39-0272-4c0a-b38a-13a72e4efc2c.png"
+                CardVideoYoutube(
+                    title = categoria,
+                    img = youtubeUrl
                 )
             }
         }
@@ -93,7 +119,9 @@ fun FormVideoApp() {
                     Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(8.dp))
-                        .clickable { },
+                        .clickable {
+                            focusManager.clearFocus(true)
+                        },
                     color = Color(0xFF2478DF),
                     elevation = 4.dp
                 ) {
@@ -104,36 +132,36 @@ fun FormVideoApp() {
                         textAlign = TextAlign.Center
                     )
                 }
-                Surface(
-                    Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(8.dp))
-                        .clickable { },
-                    color = Color(0xFF2478DF),
-                    elevation = 4.dp
-                ) {
-                    Text(
-                        text = "Alterar",
-                        Modifier.padding(10.dp),
-                        color = Color.White,
-                        textAlign = TextAlign.Center
-                    )
-                }
-                Surface(
-                    Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(8.dp))
-                        .clickable { },
-                    color = Color(0xFFD82D2D),
-                    elevation = 4.dp
-                ) {
-                    Text(
-                        text = "Remover",
-                        Modifier.padding(10.dp),
-                        color = Color.White,
-                        textAlign = TextAlign.Center
-                    )
-                }
+//                Surface(
+//                    Modifier
+//                        .fillMaxWidth()
+//                        .clip(RoundedCornerShape(8.dp))
+//                        .clickable { },
+//                    color = Color(0xFF2478DF),
+//                    elevation = 4.dp
+//                ) {
+//                    Text(
+//                        text = "Alterar",
+//                        Modifier.padding(10.dp),
+//                        color = Color.White,
+//                        textAlign = TextAlign.Center
+//                    )
+//                }
+//                Surface(
+//                    Modifier
+//                        .fillMaxWidth()
+//                        .clip(RoundedCornerShape(8.dp))
+//                        .clickable { },
+//                    color = Color(0xFFD82D2D),
+//                    elevation = 4.dp
+//                ) {
+//                    Text(
+//                        text = "Remover",
+//                        Modifier.padding(10.dp),
+//                        color = Color.White,
+//                        textAlign = TextAlign.Center
+//                    )
+//                }
             }
         }
     }
@@ -143,13 +171,14 @@ fun FormVideoApp() {
 private fun FormTextField(
     text: String,
     onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
     label: String = "",
     placeholder: String = ""
 ) {
     TextField(
         value = text,
         onValueChange = onValueChange,
-        Modifier.fillMaxWidth(),
+        modifier.fillMaxWidth(),
         label = {
             Text(text = (label))
         },
