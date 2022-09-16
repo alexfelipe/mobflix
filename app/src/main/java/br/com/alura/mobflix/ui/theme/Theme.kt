@@ -13,6 +13,7 @@ private val DarkColorPalette = darkColors(
     secondary = Purple,
     background = Color(0xFF222222),
     onSecondary = Color.White,
+    onBackground = Color.White
 )
 
 private val LightColorPalette = lightColors(
@@ -21,6 +22,7 @@ private val LightColorPalette = lightColors(
     secondary = Purple,
     background = Color(0xFF222222),
     onSecondary = Color.White,
+    onBackground = Color.White
 
     /* Other default colors to override
     background = Color.White,

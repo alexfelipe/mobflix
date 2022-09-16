@@ -1,6 +1,5 @@
 package br.com.alura.mobflix.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -8,7 +7,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -21,7 +19,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.min
 import br.com.alura.mobflix.R
 import br.com.alura.mobflix.ui.theme.MobflixTheme
 import coil.compose.AsyncImage
@@ -44,18 +41,17 @@ fun HomeScreen(
                 contentDescription = null,
                 Modifier
                     .fillMaxSize(),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
+                placeholder = painterResource(id = R.drawable.ic_launcher_background)
             )
-            Box(
+            Surface(
                 Modifier
                     .padding(bottom = 20.dp)
-                    .background(
-                        color = Color(0xFF2478DF),
-                        shape = RoundedCornerShape(8.dp),
-                    )
                     .clip(RoundedCornerShape(8.dp))
                     .align(Alignment.BottomCenter)
                     .clickable { },
+                color = Color(0xFF2478DF),
+                elevation = 4.dp
             ) {
                 Text(
                     text = "Assista agora",
@@ -95,22 +91,28 @@ fun HomeScreen(
                         end = 36.dp,
                     )
                 ) {
-                    Tag(text = "Mobile")
-                    Spacer(modifier = Modifier.height(8.dp))
-                    AsyncImage(
-                        "https://i.ytimg.com/vi/yI3AYA3L0xU/maxresdefault.jpg",
-                        contentDescription = null,
-                        Modifier
-                            .height(180.dp)
-                            .fillMaxWidth()
-                            .clip(shape = RoundedCornerShape(8.dp)),
-                        contentScale = ContentScale.Crop,
-                    )
+                    CardVideo("Mobile", "https://i.ytimg.com/vi/yI3AYA3L0xU/maxresdefault.jpg")
                 }
             }
         }
 
     }
+}
+
+@Composable
+fun CardVideo(title: String, img: String) {
+    Tag(text = title)
+    Spacer(modifier = Modifier.height(8.dp))
+    AsyncImage(
+        img,
+        contentDescription = null,
+        Modifier
+            .height(180.dp)
+            .fillMaxWidth()
+            .clip(shape = RoundedCornerShape(8.dp)),
+        contentScale = ContentScale.Crop,
+        placeholder = painterResource(id = R.drawable.ic_launcher_background)
+    )
 }
 
 @Composable

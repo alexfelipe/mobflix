@@ -1,5 +1,6 @@
 package br.com.alura.mobflix
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,6 +11,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.currentCompositionLocalContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,7 +27,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            App {
+            App(onFabClick = {
+                Intent(
+                    this,
+                    FormVideoActivity::class.java
+                ).apply { startActivity(this) }
+            }) {
                 HomeScreen(Modifier.padding(it))
             }
         }
@@ -34,6 +41,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun App(
+    onFabClick: () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit
 ) {
     MobflixTheme {
@@ -63,7 +71,7 @@ fun App(
                     }
                 }
             }, floatingActionButton = {
-                FloatingActionButton(onClick = { /*TODO*/ }) {
+                FloatingActionButton(onClick = onFabClick) {
                     Icon(
                         Icons.Default.Add,
                         contentDescription = null,
