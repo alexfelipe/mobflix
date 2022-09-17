@@ -32,7 +32,9 @@
         <activity
             android:name=".ui.activities.FormVideoActivity"
             android:windowSoftInputMode="adjustResize" />
-
+        <activity
+            android:name=".ui.activities.FormEditVideoActivity"
+            android:windowSoftInputMode="adjustResize" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

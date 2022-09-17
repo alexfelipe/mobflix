@@ -1,6 +1,8 @@
 package br.com.alura.mobflix.ui.activities
 
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -39,11 +41,36 @@ class MainActivity : ComponentActivity() {
                 },
             ) {
                 val videos by videosFlow.collectAsState(initial = emptyList())
-                HomeScreen(Modifier.padding(it), videos)
+                HomeScreen(Modifier.padding(it), videos,
+                    onClickVideo = { video ->
+                        openYoutubeVideo(video)
+                    },
+                    onLongClickVideo = { video ->
+                        startActivity(Intent(
+                            this, FormVideoActivity::class.java
+                        ).apply {
+                            putExtra("VIDEO_ID", video.id)
+                        })
+                    },
+                    onPlayNowClick = { video ->
+                        openYoutubeVideo(video)
+                    }
+                )
             }
         }
     }
 
+
+}
+
+
+private fun Context.openYoutubeVideo(video: YoutubeVideo) {
+    startActivity(
+        Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse(video.youtubeUrl)
+        )
+    )
 }
 
 @Composable

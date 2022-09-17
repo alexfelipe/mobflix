@@ -1,7 +1,9 @@
 package br.com.alura.mobflix.ui.screens
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -23,67 +25,38 @@ import androidx.compose.ui.unit.dp
 import br.com.alura.mobflix.R
 import br.com.alura.mobflix.model.Category
 import br.com.alura.mobflix.model.YoutubeVideo
+import br.com.alura.mobflix.ui.components.CardVideoYoutube
 import br.com.alura.mobflix.ui.theme.MobflixTheme
 import coil.compose.AsyncImage
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     videos: List<YoutubeVideo> = emptyList(),
+    onPlayNowClick: (YoutubeVideo) -> Unit = {},
+    onLongClickVideo: (YoutubeVideo) -> Unit = {},
+    onClickVideo: (YoutubeVideo) -> Unit = {}
 ) {
     Column(
         modifier
             .fillMaxSize()
     ) {
-        Box(
-            Modifier
-                .height(140.dp)
-                .fillMaxWidth()
-        ) {
-            AsyncImage(
-                "https://i.ytimg.com/vi/2t8ycK8D4Rk/maxresdefault.jpg",
-                contentDescription = null,
-                Modifier
-                    .fillMaxSize(),
-                contentScale = ContentScale.Crop,
-                placeholder = painterResource(
-                    id = R.drawable.preview_image_placeholder
-                )
-            )
-            Surface(
-                Modifier
-                    .padding(bottom = 20.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .align(Alignment.BottomCenter)
-                    .clickable { },
-                color = Color(0xFF2478DF),
-                elevation = 4.dp
-            ) {
-                Text(
-                    text = "Assista agora",
-                    Modifier.padding(10.dp),
-                    color = Color.White,
-                )
+        MainBannerVideo(
+            YoutubeVideo(
+                youtubeId = "94yuIVdoevc",
+            ),
+            onPlayNowClick = { video ->
+                onPlayNowClick(video)
             }
-        }
+        )
         LazyColumn(
             contentPadding = PaddingValues(
                 vertical = 28.dp,
             )
         ) {
             item {
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(
-                        start = 36.dp,
-                        bottom = 16.dp,
-                        end = 36.dp,
-                    )
-                ) {
-                    items(Category.values()) { category ->
-                        Tag(category)
-                    }
-                }
+                CategoriesList(Category.values())
             }
             items(videos) { video ->
                 Column(
@@ -93,7 +66,17 @@ fun HomeScreen(
                         end = 36.dp,
                     )
                 ) {
-                    CardVideoYoutube(video)
+                    CardVideoYoutube(
+                        video,
+                        Modifier.combinedClickable(
+                            onClick = {
+                                onClickVideo(video)
+                            },
+                            onLongClick = {
+                                onLongClickVideo(video)
+                            }
+                        ),
+                    )
                 }
             }
         }
@@ -102,26 +85,59 @@ fun HomeScreen(
 }
 
 @Composable
-fun CardVideoYoutube(
-    video: YoutubeVideo
+private fun MainBannerVideo(
+    video: YoutubeVideo,
+    onPlayNowClick: (YoutubeVideo) -> Unit = {}
 ) {
-    video.category?.let {
-        Tag(
-            category = it,
-            Modifier.padding(bottom = 8.dp),
-        )
-    }
-    AsyncImage(
-        video.thumb,
-        contentDescription = null,
+    Box(
         Modifier
-            .height(180.dp)
+            .height(140.dp)
             .fillMaxWidth()
-            .clip(shape = RoundedCornerShape(8.dp)),
-        contentScale = ContentScale.Crop,
-        placeholder = painterResource(id = R.drawable.preview_video_placeholder),
-        error = painterResource(id = R.drawable.preview_video_placeholder)
-    )
+    ) {
+        AsyncImage(
+            video.thumb,
+            contentDescription = null,
+            Modifier
+                .fillMaxSize(),
+            contentScale = ContentScale.Crop,
+            placeholder = painterResource(
+                id = R.drawable.preview_image_placeholder
+            )
+        )
+        Surface(
+            Modifier
+                .padding(bottom = 20.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .align(Alignment.BottomCenter)
+                .clickable {
+                    onPlayNowClick(video)
+                },
+            color = Color(0xFF2478DF),
+            elevation = 4.dp
+        ) {
+            Text(
+                text = "Assista agora",
+                Modifier.padding(10.dp),
+                color = Color.White,
+            )
+        }
+    }
+}
+
+@Composable
+private fun CategoriesList(categories: Array<Category>) {
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        contentPadding = PaddingValues(
+            start = 36.dp,
+            bottom = 16.dp,
+            end = 36.dp,
+        )
+    ) {
+        items(categories) { category ->
+            Tag(category)
+        }
+    }
 }
 
 @Composable
@@ -156,7 +172,15 @@ fun HomeScreenPreview() {
         Surface(
             color = MaterialTheme.colors.background,
         ) {
-            HomeScreen(videos = emptyList())
+            HomeScreen(
+                videos = listOf(
+                    YoutubeVideo(),
+                    YoutubeVideo(
+                        youtubeId = "test",
+                        category = Category.MOBILE,
+                    ),
+                )
+            )
         }
     }
 }
