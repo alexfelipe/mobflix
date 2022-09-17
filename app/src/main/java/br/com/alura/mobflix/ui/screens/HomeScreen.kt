@@ -23,13 +23,13 @@ import androidx.compose.ui.unit.dp
 import br.com.alura.mobflix.R
 import br.com.alura.mobflix.model.Category
 import br.com.alura.mobflix.model.YoutubeVideo
-import br.com.alura.mobflix.sampleData.sampleVideos
 import br.com.alura.mobflix.ui.theme.MobflixTheme
 import coil.compose.AsyncImage
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
+    videos: List<YoutubeVideo> = emptyList(),
 ) {
     Column(
         modifier
@@ -85,7 +85,7 @@ fun HomeScreen(
                     }
                 }
             }
-            items(sampleVideos) { video ->
+            items(videos) { video ->
                 Column(
                     Modifier.padding(
                         top = 18.dp,
@@ -125,7 +125,10 @@ fun CardVideoYoutube(
 }
 
 @Composable
-fun Tag(category: Category, modifier: Modifier = Modifier) {
+fun Tag(
+    category: Category,
+    modifier: Modifier = Modifier,
+) {
     Box(
         modifier
             .background(
@@ -144,7 +147,6 @@ fun Tag(category: Category, modifier: Modifier = Modifier) {
             ),
         )
     }
-
 }
 
 @Preview(showBackground = true)
@@ -154,7 +156,7 @@ fun HomeScreenPreview() {
         Surface(
             color = MaterialTheme.colors.background,
         ) {
-            HomeScreen()
+            HomeScreen(videos = emptyList())
         }
     }
 }

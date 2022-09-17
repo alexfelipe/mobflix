@@ -4,14 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement.Center
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.currentCompositionLocalContext
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,11 +18,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import br.com.alura.mobflix.model.Category
+import br.com.alura.mobflix.model.YoutubeVideo
+import br.com.alura.mobflix.sampleData.videosFlow
 import br.com.alura.mobflix.ui.screens.HomeScreen
 import br.com.alura.mobflix.ui.theme.MobflixTheme
 import br.com.alura.mobflix.ui.theme.topAppBarFont
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -35,10 +38,12 @@ class MainActivity : ComponentActivity() {
                     ).apply { startActivity(this) }
                 },
             ) {
-                HomeScreen(Modifier.padding(it))
+                val videos by videosFlow.collectAsState(initial = emptyList())
+                HomeScreen(Modifier.padding(it), videos)
             }
         }
     }
+
 }
 
 @Composable
@@ -90,6 +95,14 @@ fun App(
 @Composable
 fun AppPreview() {
     App {
-        HomeScreen(Modifier.padding(it))
+        HomeScreen(
+            Modifier.padding(it), listOf(
+                YoutubeVideo(
+                    category = Category.MOBILE
+                ), YoutubeVideo(
+                    category = Category.PROGRAMACAO,
+                )
+            )
+        )
     }
 }

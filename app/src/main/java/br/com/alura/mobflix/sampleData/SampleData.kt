@@ -2,8 +2,10 @@ package br.com.alura.mobflix.sampleData
 
 import br.com.alura.mobflix.model.Category
 import br.com.alura.mobflix.model.YoutubeVideo
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
-val sampleVideos = listOf(
+private val sampleVideos = mutableListOf(
     YoutubeVideo(
         "2z6f8VN_Pro",
         Category.MOBILE
@@ -29,3 +31,12 @@ val sampleVideos = listOf(
         Category.MOBILE
     ),
 )
+
+private val _videosFlow = MutableStateFlow(sampleVideos.toList())
+
+val videosFlow: Flow<List<YoutubeVideo>> = _videosFlow
+
+suspend fun saveVideo(video: YoutubeVideo) {
+    sampleVideos.add(video)
+    _videosFlow.emit(sampleVideos.toList())
+}

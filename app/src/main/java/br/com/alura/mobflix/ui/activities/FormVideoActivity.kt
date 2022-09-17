@@ -19,10 +19,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.lifecycleScope
 import br.com.alura.mobflix.model.Category
 import br.com.alura.mobflix.model.YoutubeVideo
+import br.com.alura.mobflix.sampleData.saveVideo
 import br.com.alura.mobflix.ui.screens.CardVideoYoutube
 import br.com.alura.mobflix.ui.theme.MobflixTheme
+import kotlinx.coroutines.launch
 
 class FormVideoActivity : ComponentActivity() {
 
@@ -31,7 +34,12 @@ class FormVideoActivity : ComponentActivity() {
         setContent {
             MobflixTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    FormVideoApp()
+                    FormVideoApp(onRegisterClick = { video ->
+                        lifecycleScope.launch {
+                            saveVideo(video)
+                            finish()
+                        }
+                    })
                 }
             }
         }
@@ -40,11 +48,10 @@ class FormVideoActivity : ComponentActivity() {
 }
 
 @Composable
-fun FormVideoApp() {
+fun FormVideoApp(onRegisterClick: (YoutubeVideo) -> Unit = {}) {
     var youtubeId by remember { mutableStateOf("") }
     var url by remember { mutableStateOf("") }
     var category by remember { mutableStateOf("") }
-
     val selectedCategory: Category? = remember(category) {
         try {
             Category.valueOf(category)
@@ -52,7 +59,7 @@ fun FormVideoApp() {
             null
         }
     }
-    val video = remember(youtubeId, selectedCategory ) {
+    val video = remember(youtubeId, selectedCategory) {
         YoutubeVideo(youtubeId, selectedCategory)
     }
     val focusManager = LocalFocusManager.current
@@ -103,17 +110,19 @@ fun FormVideoApp() {
             )
         }
         item {
-            Column {
-                Text(
-                    text = "Preview",
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp),
-                    fontSize = 28.sp
-                )
-                CardVideoYoutube(
-                    video
-                )
+            if (youtubeId.isNotBlank()) {
+                Column {
+                    Text(
+                        text = "Preview",
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp),
+                        fontSize = 28.sp
+                    )
+                    CardVideoYoutube(
+                        video
+                    )
+                }
             }
         }
         item {
@@ -124,6 +133,7 @@ fun FormVideoApp() {
                         .clip(RoundedCornerShape(8.dp))
                         .clickable {
                             focusManager.clearFocus(true)
+                            onRegisterClick(video)
                         },
                     color = Color(0xFF2478DF),
                     elevation = 4.dp
