@@ -200,7 +200,8 @@ private fun FormVideoTextField(
             focusedLabelColor = Color.White,
             cursorColor = Color.White,
             placeholderColor = Color(0xFFB0B0B0),
-            focusedIndicatorColor = Color.Transparent
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
         ),
         shape = RoundedCornerShape(8.dp),
         placeholder = {
