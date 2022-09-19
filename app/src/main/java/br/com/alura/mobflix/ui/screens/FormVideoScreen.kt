@@ -34,7 +34,7 @@ fun FormVideoScreen(
     val foundVideo = findYoutubeVideoById(currentVideoId)
     var youtubeId by remember { mutableStateOf(foundVideo?.youtubeId ?: "") }
     var url by remember { mutableStateOf(youtubeId) }
-    var category by remember { mutableStateOf(foundVideo?.category.toString() ?: "") }
+    var category by remember { mutableStateOf(foundVideo?.category?.toString() ?: "") }
     val selectedCategory: Category? = remember(category) {
         try {
             Category.valueOf(category)
